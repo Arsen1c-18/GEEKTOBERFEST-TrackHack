@@ -12,7 +12,7 @@ function SearchBar({ onSearch }) {
         <form onSubmit={handleSubmit} className="flex gap-2 flex-1">
             <input
                 type="text"
-                placeholder="Search by title or organizer"
+                placeholder="Search by title, organizer, description or location"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 className="flex-1 border border-gray-300 rounded px-3 py-2 bg-white"
