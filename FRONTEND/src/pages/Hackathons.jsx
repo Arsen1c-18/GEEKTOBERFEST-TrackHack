@@ -3,6 +3,7 @@ import api from "../api";
 import HackathonCard from "../components/HackathonCard";
 import SearchBar from "../components/SearchBar";
 import FilterBar from "../components/FilterBar";
+import EmptyState from "../components/EmptyState";
 
 function Hackathons() {
     const [hackathons, setHackathons] = useState([]);
@@ -51,7 +52,19 @@ function Hackathons() {
             {loading ? (
                 <p>Loading...</p>
             ) : hackathons.length === 0 ? (
-                <p className="text-gray-600">No hackathons match your search.</p>
+                search || status || mode ? (
+                    <EmptyState
+                        title="No matching hackathons"
+                        message="Try a different search term or change the filters."
+                    />
+                ) : (
+                    <EmptyState
+                        title="No hackathons yet"
+                        message="Be the first to add a hackathon for everyone to see."
+                        actionLabel="Add hackathon"
+                        actionTo="/hackathons/create"
+                    />
+                )
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {hackathons.map((hackathon) => (
