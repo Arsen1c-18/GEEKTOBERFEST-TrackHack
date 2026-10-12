@@ -158,6 +158,24 @@ All application API routes are mounted under `/api`.
 | GET | `/api/github/profile/:username` | Fetch a GitHub profile |
 | GET | `/api/github/repos/:username` | Fetch GitHub repositories |
 
+### Searching hackathons
+
+`GET /api/hackathons` accepts these optional query parameters, which can be combined:
+
+| Parameter | Example | Description |
+|---|---|---|
+| `search` | `search=ai` | Case-insensitive keyword match on title, organizer, description, or location |
+| `status` | `status=Upcoming,Completed` | One or more statuses, comma-separated |
+| `mode` | `mode=Online` | One or more modes, comma-separated |
+| `startFrom` | `startFrom=2026-10-01` | Hackathons starting on or after this date |
+| `startTo` | `startTo=2026-10-31` | Hackathons starting on or before this date |
+| `mine` | `mine=true` | Only hackathons created by the logged-in user |
+| `sort` | `sort=startDate` | `newest` (default), `oldest`, `startDate`, `-startDate`, `deadline`, or `title` |
+| `page` | `page=2` | Page number, starting at 1 |
+| `limit` | `limit=10` | Results per page (default 10, max 50) |
+
+Results are only paginated when `page` or `limit` is sent. The response includes `total` (all matching hackathons), `count` (results on this page), `page`, and `totalPages`. Invalid values return `400`.
+
 The hackathon, tracker, and GitHub routes require authentication where configured. Requests that require authentication should include the JWT in the `Authorization` header as a Bearer token.
 
 Users have a `user` or `admin` role, returned on register/login and in tokens. Registration never accepts a client-sent role. Owners can edit or delete their own hackathons and trackers; admins can manage any hackathon or tracker. The admin UI lives at `/admin` and is visible only to admins. Deleting a user removes their trackers but keeps hackathons they created.
