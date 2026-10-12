@@ -3,17 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import StatusBadge from "../components/StatusBadge";
-
-function formatDate(date) {
-    if (!date) {
-        return "TBA";
-    }
-    return new Date(date).toLocaleDateString("en-IN", {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-    });
-}
+import { formatDate } from "../utils/formatDate";
 
 function HackathonDetails() {
     const { id } = useParams();

@@ -41,4 +41,25 @@ describe("HackathonCard", () => {
 
         expect(screen.getByText(/TBA/)).toBeInTheDocument();
     });
+
+    test("shows Dates TBA when both dates are missing", () => {
+        renderCard({ ...hackathon, startDate: null, endDate: null });
+
+        expect(screen.getByText(/Dates TBA/)).toBeInTheDocument();
+    });
+
+    test("shows one-sided dates gracefully", () => {
+        const { unmount } = renderCard({ ...hackathon, endDate: null });
+        expect(screen.getByText(/Starts /)).toBeInTheDocument();
+        unmount();
+
+        renderCard({ ...hackathon, startDate: null });
+        expect(screen.getByText(/Ends /)).toBeInTheDocument();
+    });
+
+    test("collapses a single-day event to one date", () => {
+        renderCard({ ...hackathon, startDate: "2026-11-01", endDate: "2026-11-01" });
+
+        expect(screen.queryByText(/ to /)).not.toBeInTheDocument();
+    });
 });
