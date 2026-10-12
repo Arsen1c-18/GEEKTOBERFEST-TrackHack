@@ -17,7 +17,8 @@ const createUser = async (overrides = {}) => {
         name: overrides.name || "Test User",
         email: (overrides.email || uniqueEmail()).toLowerCase(),
         password: hashedPassword,
-        githubUsername: overrides.githubUsername || ""
+        githubUsername: overrides.githubUsername || "",
+        role: overrides.role || "user"
     });
 
     return user;
@@ -25,7 +26,8 @@ const createUser = async (overrides = {}) => {
 
 const authHeaderFor = (user) => {
     const id = user._id ? user._id.toString() : user.toString();
-    const token = jwt.sign({ id }, process.env.JWT_SECRET || "test-jwt-secret");
+    const role = user.role || "user";
+    const token = jwt.sign({ id, role }, process.env.JWT_SECRET || "test-jwt-secret");
     return "Bearer " + token;
 };
 
