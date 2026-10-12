@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../api";
 import HackathonCard from "../components/HackathonCard";
 import ProgressBar from "../components/ProgressBar";
+import EmptyState from "../components/EmptyState";
 import { trackersToCsv, downloadCsv } from "../utils/exportCsv";
 
 function Dashboard() {
@@ -70,9 +71,12 @@ function Dashboard() {
                     </button>
                 </div>
                 {trackers.length === 0 ? (
-                    <p className="text-gray-600">
-                        No trackers yet. Open a hackathon and click "Track my progress".
-                    </p>
+                    <EmptyState
+                        title="No trackers yet"
+                        message='Open a hackathon and click "Track my progress" to start tracking it here.'
+                        actionLabel="Browse hackathons"
+                        actionTo="/hackathons"
+                    />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {trackers.map((tracker) => (
@@ -97,7 +101,12 @@ function Dashboard() {
                     </Link>
                 </div>
                 {hackathons.length === 0 ? (
-                    <p className="text-gray-600">You haven't added any hackathons yet.</p>
+                    <EmptyState
+                        title="No hackathons yet"
+                        message="Add a hackathon you're interested in to keep all its details in one place."
+                        actionLabel="Add your first hackathon"
+                        actionTo="/hackathons/create"
+                    />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {hackathons.map((hackathon) => (
