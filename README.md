@@ -111,6 +111,8 @@ Run these commands from `BACKEND/`.
 | `npm install` | Install dependencies |
 | `npm run dev` | Start the development server |
 | `npm start` | Start the server |
+| `npm test` | Run backend integration tests (Jest + Supertest + in-memory MongoDB) |
+| `npm run lint` | Run Oxlint |
 
 ### Frontend
 
@@ -123,6 +125,13 @@ Run these commands from `FRONTEND/`.
 | `npm run build` | Build the production frontend |
 | `npm run preview` | Preview the production build |
 | `npm run lint` | Run Oxlint |
+| `npm run test` | Run frontend component tests (Vitest + React Testing Library) |
+
+## Testing and CI
+
+- Backend: `cd BACKEND && npm test` runs integration tests for auth, hackathons, trackers, GitHub routes, and the auth guard. Tests use `mongodb-memory-server`, so no local MongoDB is needed. `JWT_SECRET` defaults to a test value when unset.
+- Frontend: `cd FRONTEND && npm run test` runs component tests for cards, badges, forms, filters, progress, route guards, and the API client.
+- CI (`.github/workflows/ci.yml`) runs on pushes and pull requests to `main`: backend lint + integration tests, frontend lint + component tests + production build.
 
 ## API Overview
 
