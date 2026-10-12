@@ -72,6 +72,7 @@ function HackathonDetails() {
     }
 
     const isOwner = hackathon.createdBy && hackathon.createdBy._id === user.id;
+    const canManage = isOwner || user.role === "admin";
     const hasValidWebsite = hackathon.website && hackathon.website.startsWith("http");
 
     return (
@@ -115,7 +116,7 @@ function HackathonDetails() {
                     </button>
                 )}
 
-                {isOwner && (
+                {canManage && (
                     <>
                         <Link to={"/hackathons/" + id + "/edit"} className="border border-gray-300 px-4 py-2 rounded">
                             Edit

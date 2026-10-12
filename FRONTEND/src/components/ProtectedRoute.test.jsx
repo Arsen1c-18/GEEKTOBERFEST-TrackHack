@@ -41,3 +41,49 @@ describe("ProtectedRoute", () => {
         expect(screen.getByText("Login page")).toBeInTheDocument();
     });
 });
+
+describe("ProtectedRoute adminOnly", () => {
+    const renderAdminRoute = (user) => {
+        vi.spyOn(AuthContext, "useAuth").mockReturnValue({
+            user,
+            isAdmin: user?.role === "admin",
+            saveLogin: vi.fn(),
+            logout: vi.fn()
+        });
+
+        return render(
+            <MemoryRouter initialEntries={["/admin"]}>
+                <Routes>
+                    <Route
+                        path="/admin"
+                        element={
+                            <ProtectedRoute adminOnly>
+                                <p>Admin panel</p>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/dashboard" element={<p>User dashboard</p>} />
+                    <Route path="/login" element={<p>Login page</p>} />
+                </Routes>
+            </MemoryRouter>
+        );
+    };
+
+    test("renders children for admins", () => {
+        renderAdminRoute({ name: "Ada", role: "admin" });
+
+        expect(screen.getByText("Admin panel")).toBeInTheDocument();
+    });
+
+    test("redirects non-admin users to dashboard", () => {
+        renderAdminRoute({ name: "Bob", role: "user" });
+
+        expect(screen.getByText("User dashboard")).toBeInTheDocument();
+    });
+
+    test("redirects anonymous users to login", () => {
+        renderAdminRoute(null);
+
+        expect(screen.getByText("Login page")).toBeInTheDocument();
+    });
+});

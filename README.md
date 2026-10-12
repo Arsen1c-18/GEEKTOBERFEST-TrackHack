@@ -4,7 +4,8 @@ TrackHack helps students keep track of hackathons and manage their progress from
 
 ## Features
 
-- User registration and login
+- User registration and login with `user` / `admin` roles
+- Admins can manage any hackathon or tracker and administer users
 - Create, view, update, and delete hackathon entries
 - Store hackathon dates, registration deadlines, location, mode, and website
 - Track progress through different stages of a hackathon
@@ -63,9 +64,10 @@ PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_long_random_secret
 GITHUB_TOKEN=your_github_personal_access_token
+ADMIN_EMAILS=admin1@example.com,admin2@example.com
 ```
 
-Use a valid MongoDB connection string and a strong, randomly generated JWT secret. The GitHub token is used by the backend's GitHub integration; keep it private and grant only the permissions needed.
+Use a valid MongoDB connection string and a strong, randomly generated JWT secret. The GitHub token is used by the backend's GitHub integration; keep it private and grant only the permissions needed. `ADMIN_EMAILS` is optional: accounts registering or logging in with a listed email are elevated to `admin` for bootstrapping. Removing an email from the list does not demote existing admins.
 
 Start the backend:
 
@@ -113,6 +115,7 @@ Run these commands from `BACKEND/`.
 | `npm start` | Start the server |
 | `npm test` | Run backend integration tests (Jest + Supertest + in-memory MongoDB) |
 | `npm run lint` | Run Oxlint |
+| `npm run promote-admin -- <email>` | Promote an existing user to admin |
 
 ### Frontend
 
@@ -147,8 +150,11 @@ All application API routes are mounted under `/api`.
 | GET | `/api/hackathons/:id` | Get a hackathon |
 | PUT | `/api/hackathons/:id` | Update a hackathon |
 | DELETE | `/api/hackathons/:id` | Delete a hackathon |
-| GET | `/api/trackers` | List trackers |
+| GET | `/api/trackers` | List trackers (own; admins can pass `?all=true`) |
 | POST | `/api/trackers` | Create a tracker |
+| GET | `/api/admin/users` | List users (admin only) |
+| PATCH | `/api/admin/users/:id/role` | Change a user's role (admin only) |
+| DELETE | `/api/admin/users/:id` | Delete a user and their trackers (admin only) |
 | GET | `/api/github/profile/:username` | Fetch a GitHub profile |
 | GET | `/api/github/repos/:username` | Fetch GitHub repositories |
 
@@ -171,6 +177,8 @@ All application API routes are mounted under `/api`.
 Results are only paginated when `page` or `limit` is sent. The response includes `total` (all matching hackathons), `count` (results on this page), `page`, and `totalPages`. Invalid values return `400`.
 
 The hackathon, tracker, and GitHub routes require authentication where configured. Requests that require authentication should include the JWT in the `Authorization` header as a Bearer token.
+
+Users have a `user` or `admin` role, returned on register/login and in tokens. Registration never accepts a client-sent role. Owners can edit or delete their own hackathons and trackers; admins can manage any hackathon or tracker. The admin UI lives at `/admin` and is visible only to admins. Deleting a user removes their trackers but keeps hackathons they created.
 
 ## Project Structure
 
