@@ -4,6 +4,7 @@ import api from "../api";
 import HackathonCard from "../components/HackathonCard";
 import SearchBar from "../components/SearchBar";
 import FilterBar from "../components/FilterBar";
+import EmptyState from "../components/EmptyState";
 import Pagination from "../components/Pagination";
 
 const PAGE_SIZE = 10;
@@ -116,7 +117,19 @@ function Hackathons() {
             {loading ? (
                 <p>Loading...</p>
             ) : hackathons.length === 0 ? (
-                <p className="text-gray-600">No hackathons match your search.</p>
+                search || status || mode ? (
+                    <EmptyState
+                        title="No matching hackathons"
+                        message="Try a different search term or change the filters."
+                    />
+                ) : (
+                    <EmptyState
+                        title="No hackathons yet"
+                        message="Be the first to add a hackathon for everyone to see."
+                        actionLabel="Add hackathon"
+                        actionTo="/hackathons/create"
+                    />
+                )
             ) : (
                 <>
                     <p className="text-sm text-gray-600 mb-3">
