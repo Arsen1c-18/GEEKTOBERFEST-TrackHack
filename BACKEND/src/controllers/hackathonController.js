@@ -104,7 +104,7 @@ const updateHackathon = async (req, res) => {
             });
         }
 
-        if (hackathon.createdBy.toString() !== req.user) {
+        if (hackathon.createdBy.toString() !== req.user && req.role !== "admin") {
             return res.status(403).json({
                 success: false,
                 message: "You can only edit hackathons you created"
@@ -150,7 +150,7 @@ const deleteHackathon = async (req, res) => {
             });
         }
 
-        if (hackathon.createdBy.toString() !== req.user) {
+        if (hackathon.createdBy.toString() !== req.user && req.role !== "admin") {
             return res.status(403).json({
                 success: false,
                 message: "You can only delete hackathons you created"

@@ -57,7 +57,18 @@ const createTracker = async (req, res) => {
 };
 
 const getTrackers = async (req, res) => {
-        const filter = { user: req.user };
+        const filter = {};
+
+        if (req.query.all === "true") {
+            if (req.role !== "admin") {
+                return res.status(403).json({
+                    success: false,
+                    message: "Admin access required"
+                });
+            }
+        } else {
+            filter.user = req.user;
+        }
 
         if (req.query.hackathon) {
             if (!mongoose.Types.ObjectId.isValid(req.query.hackathon)) {
@@ -97,7 +108,7 @@ const getTrackerById = async (req, res) => {
             });
         }
 
-        if (tracker.user.toString() !== req.user) {
+        if (tracker.user.toString() !== req.user && req.role !== "admin") {
             return res.status(403).json({
                 success: false,
                 message: "You can only view your own trackers"
@@ -127,7 +138,7 @@ const updateTracker = async (req, res) => {
             });
         }
 
-        if (tracker.user.toString() !== req.user) {
+        if (tracker.user.toString() !== req.user && req.role !== "admin") {
             return res.status(403).json({
                 success: false,
                 message: "You can only edit your own trackers"
@@ -166,7 +177,7 @@ const deleteTracker = async (req, res) => {
             });
         }
 
-        if (tracker.user.toString() !== req.user) {
+        if (tracker.user.toString() !== req.user && req.role !== "admin") {
             return res.status(403).json({
                 success: false,
                 message: "You can only delete your own trackers"
